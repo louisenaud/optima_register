@@ -23,46 +23,21 @@ class Linear_operator(object):
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
     def forward(self, x):
-        """ Return L x
         """
-        h, w = x.shape
-        gradient = np.zeros((h, w, 2), x.dtype)  # Allocate gradient array
-        # Horizontal direction
-        gradient[:, :-1, 0] = x[:, 1:] - x[:, :-1]
-        # Vertical direction
-        gradient[:-1, :, 1] = x[1:, :] - x[:-1, :]
-        return gradient
-        #raise NotImplementedError
+        Return L x
+        :param x: 
+        :return: 
+        """
+        raise NotImplementedError
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
     def backward(self, y):
         """
-            Function to compute the backward divergence.
-            Definition in : http://www.ipol.im/pub/art/2014/103/, p208
-
-            :param grad: numpy array [NxMx2], array with the same dimensions as the gradient of the image to denoise.
-            :return: numpy array [NxM], backward divergence L^t y
+        Return L^T y
+        :param y: 
+        :return: 
         """
-
-        h, w = y.shape[:2]
-        div = np.zeros((h, w), y.dtype)  # Allocate divergence array
-        # Horizontal direction
-        d_h = np.zeros((h, w), y.dtype)
-        d_h[:, 0] = y[:, 0, 0]
-        d_h[:, 1:-1] = y[:, 1:-1, 0] - y[:, :-2, 0]
-        d_h[:, -1] = -y[:, -2:-1, 0].flatten()
-
-        # Vertical direction
-        d_v = np.zeros((h, w), y.dtype)
-        d_v[0, :] = y[0, :, 1]
-        d_v[1:-1, :] = y[1:-1, :, 1] - y[:-2, :, 1]
-        d_v[-1, :] = -y[-2:-1, :, 1].flatten()
-
-        # Divergence
-        div = d_h + d_v
-        return div
-
-        #raise NotImplementedError
+        raise NotImplementedError
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
     # Helper functions
@@ -129,18 +104,45 @@ class Gradient_grid_linear_opreator(Grid_linear_opreator):
     def forward(self, x):
         """ Return L x
         """
-        # TODO: to implement
+        h, w = x.shape
+        gradient = np.zeros((h, w, 2), x.dtype)  # Allocate gradient array
+        # Horizontal direction
+        gradient[:, :-1, 0] = x[:, 1:] - x[:, :-1]
+        # Vertical direction
+        gradient[:-1, :, 1] = x[1:, :] - x[:-1, :]
+        return gradient
 
-        raise NotImplementedError
+        #raise NotImplementedError
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
     def backward(self, y):
-        """ Return L^t y
+        """
+            Function to compute the backward divergence.
+            Definition in : http://www.ipol.im/pub/art/2014/103/, p208
+
+            :param grad: numpy array [NxMx2], array with the same dimensions as the gradient of the image to denoise.
+            :return: numpy array [NxM], backward divergence L^t y
         """
 
-        # TODO: to implement
+        h, w = y.shape[:2]
+        div = np.zeros((h, w), y.dtype)  # Allocate divergence array
+        # Horizontal direction
+        d_h = np.zeros((h, w), y.dtype)
+        d_h[:, 0] = y[:, 0, 0]
+        d_h[:, 1:-1] = y[:, 1:-1, 0] - y[:, :-2, 0]
+        d_h[:, -1] = -y[:, -2:-1, 0].flatten()
 
-        raise NotImplementedError
+        # Vertical direction
+        d_v = np.zeros((h, w), y.dtype)
+        d_v[0, :] = y[0, :, 1]
+        d_v[1:-1, :] = y[1:-1, :, 1] - y[:-2, :, 1]
+        d_v[-1, :] = -y[-2:-1, :, 1].flatten()
+
+        # Divergence
+        div = d_h + d_v
+        return div
+
+        #raise NotImplementedError
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -#
     # Helper functions
